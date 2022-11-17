@@ -38,6 +38,12 @@ export default [
         type: mediaType.POST,
         method: Handler.deActivateUserCategoryList,
         options: {}
+    },
+    {
+        path:'/list/company/id',
+        type:mediaType.POST,
+        method:Handler.getUserListByCompanyId,
+        options:{}
     }
     
 ]

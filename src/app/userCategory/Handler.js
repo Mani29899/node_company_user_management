@@ -75,6 +75,21 @@ class userCategory {
             httpResponse(res, responseHandler.failure(methodName))
         }
     }
+
+    async getUserListByCompanyId(req, res) {
+        const methodName = Methods.GET_USER_BY_COMPANY_ID;
+        console.log(methodName)
+        try {
+            const data = postRequestParser(req);
+            const response = await service.getUserByCompanyIdService(data);
+            await httpResponse(res, response)
+        } catch (error) {
+            httpResponse(res, responseHandler.failure(methodName))
+        }
+    }
+    
+
+    
 }
 
 

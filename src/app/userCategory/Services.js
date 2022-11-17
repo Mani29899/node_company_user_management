@@ -8,11 +8,7 @@ class RoutesService {
         const methodName = Methods.GET_USERS_LIST;
         console.log(methodName);
         try {
-            let companyCategoryList = await Entity.Users.findAll({
-                where: {
-                    isActive: true,
-                }
-            });
+            let companyCategoryList = await Entity.Users.findAll();
 
             if(!companyCategoryList) return responseHandler.forbidden(methodName ,'No data found')
             return responseHandler.success(methodName, companyCategoryList)
@@ -30,7 +26,6 @@ class RoutesService {
             let userListId = await Entity.Users.findOne({
                 where: {
                     id: data && data.id,
-                    isActive: true
                 }
             })
             if (!userListId) return responseHandler.invalid(methodName, 'Data Not Found')
@@ -77,9 +72,11 @@ class RoutesService {
                 return responseHandler.invalid(methodName, 'Id is not found,So we cannot update the user details')
             }
             data.updatedAt = new Date();
+            console.log(updateCompanyDetails ,'updateCompanyDetails')
             updateCompanyDetails.update(Object.assign({}, data))
             return responseHandler.success(methodName, updateCompanyDetails)
         } catch (error) {
+            console.log(error ,'error')
             return responseHandler.failure(methodName, 'Sorry Something Went Wrong')
         }
     }
@@ -92,14 +89,12 @@ class RoutesService {
             const updateCompanyDetails = await Entity.Users.findOne({
                 where: {
                     id: data && data.id,
-                    isActive:true
                 }
             })
             if (!updateCompanyDetails) {
                 return responseHandler.invalid(methodName, 'Id is not found,So we cannot update the user details')
             }
             data.updatedAt = new Date();
-            data.isActive = false;
             updateCompanyDetails.update(Object.assign({}, data))
             return responseHandler.success(methodName, updateCompanyDetails)
         } catch (error) {
@@ -119,13 +114,32 @@ class RoutesService {
             if (!deletedCompanyDetails) {
                 return responseHandler.invalid(methodName, 'Id is not found,So we cannot remove the details')
             }
-            data.isActive = false;
-            deletedCompanyDetails.update(Object.assign({}, data))
+            deletedCompanyDetails.destroy();
             return responseHandler.success(methodName, deletedCompanyDetails)
         } catch (error) {
             return responseHandler.failure(methodName, 'sorry went something wrong')
         }
     }
+
+    async getUserByCompanyIdService(data) {
+        const methodName = Methods.GET_USER_BY_COMPANY_ID;
+        console.log(methodName);
+        try {
+            if (!data.companyId) return responseHandler.invalid(methodName, 'company is not found')
+            let userList = await Entity.Users.findAll({
+                where: {
+                    companyId: data && data.companyId,
+                }
+            })
+            if (!userList) return responseHandler.invalid(methodName, 'Data Not Found')
+            return responseHandler.success(methodName, userList)
+        } catch (error) {
+            console.log(error, 'errr')
+            return responseHandler.failure(methodName, 'Sorry something went wrong handle');
+        }
+    }
+
+    
 }
 
 export default new RoutesService();
